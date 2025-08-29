@@ -3,10 +3,8 @@ import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 
 function FormularioEditarDestino() {
-    const [nombre, setNombre] = useState('');
-    const [pais, setPais] = useState('');
+    const [coddestino, setCodDestino] = useState('');
     const [descripcion, setDescripcion] = useState('');
-    const [tarifa, setTarifa] = useState('');
     const router = useRouter();
     const { id } = useParams();
 
@@ -15,17 +13,15 @@ function FormularioEditarDestino() {
             fetch(`/api/destinos/${id}`)
                 .then(res => res.json())
                 .then(data => {
-                    setNombre(data.nombre);
-                    setPais(data.pais);
+                    setCodDestino(data.coddestino);
                     setDescripcion(data.descripcion);
-                    setTarifa(data.tarifa);
                 });
         }
     }, [id]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const data = { nombre, pais, descripcion, tarifa: parseFloat(tarifa) };
+        const data = { coddestino, descripcion };
 
         await fetch(`/api/destinos/${id}`, {
             method: 'PUT',
@@ -41,20 +37,12 @@ function FormularioEditarDestino() {
             <h1 className="text-2xl font-bold mb-4">Editar Destino</h1>
             <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-md">
                 <div className="mb-4">
-                    <label className="block text-gray-700">Nombre</label>
-                    <input type="text" value={nombre} onChange={(e) => setNombre(e.target.value)} className="w-full p-2 border rounded" required />
-                </div>
-                <div className="mb-4">
-                    <label className="block text-gray-700">País</label>
-                    <input type="text" value={pais} onChange={(e) => setPais(e.target.value)} className="w-full p-2 border rounded" required />
+                    <label className="block text-gray-700">Código de Destino</label>
+                    <input type="text" value={coddestino} onChange={(e) => setCodDestino(e.target.value)} className="w-full p-2 border rounded" required />
                 </div>
                 <div className="mb-4">
                     <label className="block text-gray-700">Descripción</label>
                     <textarea value={descripcion} onChange={(e) => setDescripcion(e.target.value)} className="w-full p-2 border rounded"></textarea>
-                </div>
-                <div className="mb-4">
-                    <label className="block text-gray-700">Tarifa</label>
-                    <input type="number" value={tarifa} onChange={(e) => setTarifa(e.target.value)} className="w-full p-2 border rounded" required />
                 </div>
                 <button type="submit" className="bg-blue-500 text-white p-2 rounded">Actualizar</button>
             </form>

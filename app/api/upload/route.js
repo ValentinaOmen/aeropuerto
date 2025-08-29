@@ -1,3 +1,35 @@
+/**
+ * @swagger
+ * /api/upload:
+ *   post:
+ *     summary: Subir un archivo
+ *     description: Sube un archivo al servidor.
+ *     tags: [Upload]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               file:
+ *                 type: string
+ *                 format: binary
+ *     responses:
+ *       200:
+ *         description: Archivo subido exitosamente.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 url:
+ *                   type: string
+ *       400:
+ *         description: Archivo no encontrado.
+ *       500:
+ *         description: Error subiendo archivo.
+ */
 import { NextResponse } from "next/server";
 import { promises as fs } from "fs";
 import path from "path";

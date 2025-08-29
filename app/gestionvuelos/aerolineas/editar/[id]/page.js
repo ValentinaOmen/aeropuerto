@@ -3,10 +3,8 @@ import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 
 function FormularioEditarAerolinea() {
-    const [nombre, setNombre] = useState('');
-    const [paisOrigen, setPaisOrigen] = useState('');
-    const [fechaFundacion, setFechaFundacion] = useState('');
-    const [sitioWeb, setSitioWeb] = useState('');
+    const [codaerolinea, setCodAerolinea] = useState('');
+    const [descripcion, setDescripcion] = useState('');
     const router = useRouter();
     const { id } = useParams();
 
@@ -15,17 +13,15 @@ function FormularioEditarAerolinea() {
             fetch(`/api/aerolineas/${id}`)
                 .then(res => res.json())
                 .then(data => {
-                    setNombre(data.nombre);
-                    setPaisOrigen(data.pais_origen);
-                    setFechaFundacion(data.fecha_fundacion);
-                    setSitioWeb(data.sitio_web);
+                    setCodAerolinea(data.codaerolinea);
+                    setDescripcion(data.descripcion);
                 });
         }
     }, [id]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const data = { nombre, pais_origen: paisOrigen, fecha_fundacion: fechaFundacion, sitio_web: sitioWeb };
+        const data = { codaerolinea, descripcion };
 
         await fetch(`/api/aerolineas/${id}`, {
             method: 'PUT',
@@ -41,20 +37,12 @@ function FormularioEditarAerolinea() {
             <h1 className="text-2xl font-bold mb-4">Editar Aerolínea</h1>
             <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-md">
                 <div className="mb-4">
-                    <label className="block text-gray-700">Nombre</label>
-                    <input type="text" value={nombre} onChange={(e) => setNombre(e.target.value)} className="w-full p-2 border rounded" required />
+                    <label className="block text-gray-700">Código de Aerolínea</label>
+                    <input type="text" value={codaerolinea} onChange={(e) => setCodAerolinea(e.target.value)} className="w-full p-2 border rounded" required />
                 </div>
                 <div className="mb-4">
-                    <label className="block text-gray-700">País de Origen</label>
-                    <input type="text" value={paisOrigen} onChange={(e) => setPaisOrigen(e.target.value)} className="w-full p-2 border rounded" required />
-                </div>
-                <div className="mb-4">
-                    <label className="block text-gray-700">Fecha de Fundación</label>
-                    <input type="date" value={fechaFundacion} onChange={(e) => setFechaFundacion(e.target.value)} className="w-full p-2 border rounded" required />
-                </div>
-                <div className="mb-4">
-                    <label className="block text-gray-700">Sitio Web</label>
-                    <input type="url" value={sitioWeb} onChange={(e) => setSitioWeb(e.target.value)} className="w-full p-2 border rounded" required />
+                    <label className="block text-gray-700">Descripción</label>
+                    <input type="text" value={descripcion} onChange={(e) => setDescripcion(e.target.value)} className="w-full p-2 border rounded" required />
                 </div>
                 <button type="submit" className="bg-blue-500 text-white p-2 rounded">Actualizar</button>
             </form>
