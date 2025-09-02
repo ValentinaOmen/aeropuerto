@@ -1,3 +1,50 @@
+/**
+ * @swagger
+ * /api/auth/registrar:
+ *   post:
+ *     summary: Registrar un nuevo usuario
+ *     description: Registra un nuevo usuario y retorna un token JWT.
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *               password:
+ *                 type: string
+ *                 format: password
+ *             required:
+ *               - email
+ *               - password
+ *     responses:
+ *       201:
+ *         description: Usuario registrado exitosamente.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 token:
+ *                   type: string
+ *                 user:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: string
+ *                     email:
+ *                       type: string
+ *       400:
+ *         description: Email o contraseña no proporcionados o inválidos.
+ *       409:
+ *         description: El usuario ya existe.
+ *       500:
+ *         description: Error interno del servidor.
+ */
 import prisma from '../../../lib/prisma';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';

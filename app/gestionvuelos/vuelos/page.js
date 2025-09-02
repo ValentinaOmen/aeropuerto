@@ -124,8 +124,8 @@ export default function VuelosPage() {
                     <td className="py-3 px-6 text-left">{vuelo.destino.descripcion}</td>
                     <td className="py-3 px-6 text-left">{vuelo.aerolinea.descripcion}</td>
                     <td className="py-3 px-6 text-center">{vuelo.salaabordaje}</td>
-                    <td className="py-3 px-6 text-center">{vuelo.horasalida}</td>
-                    <td className="py-3 px-6 text-center">{vuelo.horallegada}</td>
+                    <td className="py-3 px-6 text-center">{new Date(vuelo.horasalida).toLocaleString()}</td>
+                    <td className="py-3 px-6 text-center">{new Date(vuelo.horallegada).toLocaleString()}</td>
                     <td className="py-3 px-6 text-center">
                       <div className="flex item-center justify-center space-x-2">
                         <button

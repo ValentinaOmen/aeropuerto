@@ -53,19 +53,22 @@ function PasajerosVuelo() {
                 <ul className="bg-white p-6 rounded-lg shadow-md">
                     {pasajeros.map(p => (
                         <li key={p.id} className="border-b py-2 flex justify-between items-center">
-                            <div>
-                                <h2 className="font-bold">{p.nombre} {p.apellido}</h2>
-                                <p>{p.email} - {p.telefono}</p>
+                            <div className="flex items-center">
+                                {p.foto && <img src={p.foto} alt={`${p.nombre} ${p.apellido}`} className="w-16 h-16 rounded-full mr-4" />}
+                                <div>
+                                    <h2 className="font-bold">{p.nombre} {p.apellido}</h2>
+                                    <p>{p.email} - {p.telefono}</p>
+                                </div>
                             </div>
                             <div>
-                                <Link 
-                                    href={`/gestionvuelos/pasajeros/editar/${p.id}?vueloId=${id}`} 
+                                <Link
+                                    href={`/gestionvuelos/pasajeros/editar/${p.id}?vueloId=${id}`}
                                     className="bg-yellow-500 text-white p-2 rounded mr-2"
                                 >
                                     Editar
                                 </Link>
-                                <button 
-                                    onClick={() => handleDelete(p.id)} 
+                                <button
+                                    onClick={() => handleDelete(p.id)}
                                     className="bg-red-500 text-white p-2 rounded"
                                 >
                                     Eliminar

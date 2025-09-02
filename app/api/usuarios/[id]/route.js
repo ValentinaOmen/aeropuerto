@@ -1,3 +1,83 @@
+
+/**
+ * @swagger
+ * /api/usuarios/{id}:
+ *   get:
+ *     summary: Obtener un usuario por ID
+ *     description: Retorna un usuario específico basado en su ID.
+ *     tags: [Usuarios]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: El ID del usuario.
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Un usuario.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Usuario'
+ *       404:
+ *         description: Usuario no encontrado.
+ *   put:
+ *     summary: Actualizar un usuario
+ *     description: Actualiza un usuario existente con la información proporcionada.
+ *     tags: [Usuarios]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: El ID del usuario.
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               username:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Usuario actualizado exitosamente.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Usuario'
+ *       400:
+ *         description: La contraseña debe tener al menos 6 caracteres.
+ *       404:
+ *         description: Usuario no encontrado.
+ *       409:
+ *         description: El username ya está registrado.
+ *       500:
+ *         description: Error interno del servidor.
+ *   delete:
+ *     summary: Eliminar un usuario
+ *     description: Elimina un usuario existente.
+ *     tags: [Usuarios]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: El ID del usuario.
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Usuario eliminado correctamente.
+ *       404:
+ *         description: Usuario no encontrado.
+ *       500:
+ *         description: Error interno del servidor.
+ */
 import { NextResponse } from "next/server";
 import { PrismaClient } from '../../../generated/prisma';
 import bcrypt from "bcryptjs";

@@ -1,3 +1,57 @@
+
+/**
+ * @swagger
+ * /api/usuarios:
+ *   get:
+ *     summary: Obtener todos los usuarios
+ *     description: Retorna una lista de todos los usuarios.
+ *     tags: [Usuarios]
+ *     responses:
+ *       200:
+ *         description: Una lista de usuarios.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Usuario'
+ *   post:
+ *     summary: Crear un nuevo usuario
+ *     description: Crea un nuevo usuario con la información proporcionada.
+ *     tags: [Usuarios]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               username:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *             required:
+ *               - username
+ *               - password
+ *     responses:
+ *       201:
+ *         description: Usuario creado exitosamente.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: string
+ *                 username:
+ *                   type: string
+ *       400:
+ *         description: Username o password no proporcionados o inválidos.
+ *       409:
+ *         description: El username ya está registrado.
+ *       500:
+ *         description: Error interno del servidor.
+ */
 import { NextResponse } from "next/server";
 import { PrismaClient } from '../../generated/prisma';
 import bcrypt from "bcryptjs";
@@ -52,3 +106,23 @@ export async function POST(request) {
         return NextResponse.json({ error: "Error interno del servidor" }, { status: 500 });
     }
 }
+
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Usuario:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: string
+ *           description: "El ID del usuario"
+ *         username:
+ *           type: string
+ *           description: "El nombre de usuario"
+ *         email:
+ *           type: string
+ *           description: "El email del usuario"
+ *       required:
+ *         - username
+ */

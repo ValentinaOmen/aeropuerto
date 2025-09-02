@@ -1,3 +1,64 @@
+
+/**
+ * @swagger
+ * /api/aerolineas/{id}:
+ *   get:
+ *     summary: Obtener una aerolínea por ID
+ *     description: Retorna una aerolínea específica basada en su ID.
+ *     tags: [Aerolineas]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: El ID de la aerolínea.
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Una aerolínea.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Aerolinea'
+ *   put:
+ *     summary: Actualizar una aerolínea
+ *     description: Actualiza una aerolínea existente con la información proporcionada.
+ *     tags: [Aerolineas]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: El ID de la aerolínea.
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Aerolinea'
+ *     responses:
+ *       200:
+ *         description: Aerolínea actualizada exitosamente.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Aerolinea'
+ *   delete:
+ *     summary: Eliminar una aerolínea
+ *     description: Elimina una aerolínea existente.
+ *     tags: [Aerolineas]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: El ID de la aerolínea.
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Aerolínea eliminada correctamente.
+ */
 import { NextResponse } from "next/server";
 import { PrismaClient } from '../../../generated/prisma';
 

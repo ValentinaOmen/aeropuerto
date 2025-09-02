@@ -87,7 +87,7 @@ export default function AerolineasPage() {
                     <td className="py-3 px-6 text-left">{a.descripcion}</td>
                     <td className="py-3 px-6 text-center">
                       <div className="flex item-center justify-center space-x-2">
-                        <button onClick={() => router.push(`/gestionvuelos/aerolineas/formulario?id=${a.id}`)} className="text-sm bg-yellow-500 hover:bg-yellow-700 text-white py-1 px-3 rounded-full">
+                        <button onClick={() => router.push(`/gestionvuelos/aerolineas/editar/${a.id}`)} className="text-sm bg-yellow-500 hover:bg-yellow-700 text-white py-1 px-3 rounded-full">
                           Editar
                         </button>
                         <button onClick={() => handleDelete(a.id)} className="text-sm bg-red-500 hover:bg-red-700 text-white py-1 px-3 rounded-full">

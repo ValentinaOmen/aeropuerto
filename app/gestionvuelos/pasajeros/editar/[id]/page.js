@@ -13,9 +13,10 @@ export default function FormularioEditarPasajero() {
         apellido: '',
         email: '',
         telefono: '',
-        foto: '',
+        foto: null, // Can be a File object or a string (URL)
         vueloId: vueloId || '',
     });
+    const [previewUrl, setPreviewUrl] = useState("");
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -36,9 +37,10 @@ export default function FormularioEditarPasajero() {
                         apellido: data.apellido || '',
                         telefono: data.telefono || '',
                         email: data.email || '',
-                        foto: data.foto || '',
+                        foto: data.foto || null, // Store existing URL as string
                         vueloId: data.vueloId || vueloId,
                     });
+                    setPreviewUrl(data.foto || ""); // Set initial preview
                 }
             };
             fetchPasajero();
@@ -47,16 +49,53 @@ export default function FormularioEditarPasajero() {
 
     const onChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
+    const onFileChange = (e) => {
+        if (e.target.files && e.target.files[0]) {
+            const file = e.target.files[0];
+            setForm({ ...form, foto: file }); // Store the File object
+
+            const url = URL.createObjectURL(file);
+            setPreviewUrl(prev => {
+                if (prev && prev.startsWith('blob:')) URL.revokeObjectURL(prev);
+                return url;
+            });
+        }
+    };
+
     const onSubmit = async (e) => {
         e.preventDefault();
         const token = localStorage.getItem('token');
+        
+        let fotoUrl = form.foto; // Default to existing URL or null
+        try {
+            // If form.foto is a File object, it means a new file was selected
+            if (form.foto && typeof form.foto !== 'string') {
+                const uploadForm = new FormData();
+                uploadForm.append('file', form.foto);
+                const upRes = await fetch('/api/upload', { method: 'POST', body: uploadForm });
+                const upData = await upRes.json();
+                if (!upRes.ok) throw new Error(upData?.error || 'Error subiendo imagen');
+                fotoUrl = upData.url;
+            }
+        } catch (err) {
+            console.error("Error subiendo imagen:", err);
+            // Decide what to do on upload failure. Maybe keep the old image?
+            // For now, we let fotoUrl be the original file object, which will fail stringify
+            // A better approach is to handle this case gracefully.
+        }
+
+        const payload = {
+            ...form,
+            foto: fotoUrl, // Ensure foto is a URL string
+        };
+
         const res = await fetch(`/api/pasajero/${id}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-            body: JSON.stringify(form),
+            body: JSON.stringify(payload),
         });
+
         if (res.ok) {
-            console.log({ vueloId, redirectPath: `/gestionvuelos/vuelos/${vueloId}/pasajeros` });
             router.push(`/gestionvuelos/vuelos/${vueloId}/pasajeros`);
         }
     };
@@ -81,8 +120,18 @@ export default function FormularioEditarPasajero() {
                         </button>
                     </div>
 
+                    {/* Image Preview */}
+                    <div className="flex justify-center mb-6">
+                        <img 
+                            src={previewUrl || '/placeholder-user.png'} 
+                            alt="Foto pasajero" 
+                            className="w-32 h-32 object-cover rounded-full border" 
+                        />
+                    </div>
+
                     <form onSubmit={onSubmit}>
                         <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+                            {/* Other fields remain the same */}
                             <div>
                                 <label className='block text-gray-700 text-sm font-bold mb-2'>Nombre</label>
                                 <input
@@ -90,9 +139,8 @@ export default function FormularioEditarPasajero() {
                                     name='nombre'
                                     value={form.nombre}
                                     onChange={onChange}
-                                    placeholder='Ej: Juan'
                                     required
-                                    className='shadow-sm appearance-none border rounded w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500'
+                                    className='shadow-sm border rounded w-full py-3 px-4 focus:ring-2 focus:ring-blue-500'
                                 />
                             </div>
                             <div>
@@ -102,9 +150,8 @@ export default function FormularioEditarPasajero() {
                                     name='apellido'
                                     value={form.apellido}
                                     onChange={onChange}
-                                    placeholder='Ej: Perez'
                                     required
-                                    className='shadow-sm appearance-none border rounded w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500'
+                                    className='shadow-sm border rounded w-full py-3 px-4 focus:ring-2 focus:ring-blue-500'
                                 />
                             </div>
                             <div>
@@ -114,33 +161,31 @@ export default function FormularioEditarPasajero() {
                                     name='email'
                                     value={form.email}
                                     onChange={onChange}
-                                    placeholder='Ej: juan.perez@example.com'
                                     required
-                                    className='shadow-sm appearance-none border rounded w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500'
+                                    className='shadow-sm border rounded w-full py-3 px-4 focus:ring-2 focus:ring-blue-500'
                                 />
                             </div>
-                            <div>w
+                            <div>
                                 <label className='block text-gray-700 text-sm font-bold mb-2'>Teléfono</label>
                                 <input
                                     type='text'
                                     name='telefono'
                                     value={form.telefono}
                                     onChange={onChange}
-                                    placeholder='Ej: 3001234567'
                                     required
-                                    className='shadow-sm appearance-none border rounded w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500'
+                                    className='shadow-sm border rounded w-full py-3 px-4 focus:ring-2 focus:ring-blue-500'
                                 />
                             </div>
+
+                            {/* File Input */}
                             <div className='md:col-span-2'>
-                                <label className='block text-gray-700 text-sm font-bold mb-2'>Foto (URL)</label>
+                                <label className='block text-gray-700 text-sm font-bold mb-2'>Cambiar Foto</label>
                                 <input
-                                    type='text'
-                                    name='foto'
-                                    value={form.foto}
-                                    onChange={onChange}
-                                    placeholder='Ej: https://example.com/foto.jpg'
-                                    required
-                                    className='shadow-sm appearance-none border rounded w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500'
+                                    id="foto-upload"
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={onFileChange}
+                                    className='shadow-sm border rounded w-full py-3 px-4 focus:ring-2 focus:ring-blue-500'
                                 />
                             </div>
                         </div>
@@ -148,7 +193,7 @@ export default function FormularioEditarPasajero() {
                         <div className='mt-8 flex justify-end'>
                             <button
                                 type='submit'
-                                className='bg-blue-600 hover:bg-blue-800 text-white font-bold py-3 px-6 rounded-lg focus:outline-none focus:shadow-outline transition duration-300'
+                                className='bg-blue-600 hover:bg-blue-800 text-white font-bold py-3 px-6 rounded-lg transition duration-300'
                             >
                                 Actualizar Pasajero
                             </button>

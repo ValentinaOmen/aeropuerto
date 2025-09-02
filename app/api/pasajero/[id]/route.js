@@ -1,3 +1,64 @@
+
+/**
+ * @swagger
+ * /api/pasajero/{id}:
+ *   get:
+ *     summary: Obtener un pasajero por ID
+ *     description: Retorna un pasajero específico basado en su ID.
+ *     tags: [Pasajeros]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: El ID del pasajero.
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Un pasajero.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Pasajero'
+ *   put:
+ *     summary: Actualizar un pasajero
+ *     description: Actualiza un pasajero existente con la información proporcionada.
+ *     tags: [Pasajeros]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: El ID del pasajero.
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Pasajero'
+ *     responses:
+ *       200:
+ *         description: Pasajero actualizado exitosamente.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Pasajero'
+ *   delete:
+ *     summary: Eliminar un pasajero
+ *     description: Elimina un pasajero existente.
+ *     tags: [Pasajeros]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: El ID del pasajero.
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Pasajero eliminado correctamente.
+ */
 import { NextResponse } from "next/server";
 import { PrismaClient } from '../../../generated/prisma';
 
@@ -22,7 +83,7 @@ export async function PUT(request,{params}){
                 telefono: json.telefono,
                 email: json.email,
                 foto: json.foto,
-                codvuelo: json.codvuelo
+                vueloId: json.vueloId
             }
         });
     return NextResponse.json(pasajero);
